@@ -33,8 +33,7 @@ public with sharing class DMLOperations {
         // Create a new Account instance
 
         if(!Schema.SObjectType.Account.isCreateable()){
-            System.debug('User does not have permission to create Account records');
-            return null;
+             return null;
         }
 
         Account acc = new Account();
@@ -51,26 +50,21 @@ public with sharing class DMLOperations {
             acc.NumberOfEmployees = 10;
        
 
-            acc.BillingCity = 'Oswego, Missippi';
-
-                        
+            acc.BillingCity = 'Oswego';
+            acc.BillingState = 'Missippi';
 
         // Insert the Account into the database
    
             try{
-                insert acc;
 
-                System.debug('Account created successfully')  ;
+                insert acc;
 
             } catch (DmlException e) {
 
-                System.debug('Insert failed: '+ e.getMessage());
-
-
-                return null;
+                  return null;
             }
          // Return the Id of the newly created Account
-          return acc.Id;
+            return acc.Id;
         }
                           
        
@@ -92,12 +86,9 @@ public with sharing class DMLOperations {
         );
 
         // Insert the Account
-
-    
             insert newAcc ;
             
-            
-        }
+          }
         
     
      
@@ -121,7 +112,7 @@ public with sharing class DMLOperations {
         // Set the AccountId field to the given accountId
         if (accountId != null){
 
-            newCon.AccountID = accountId; 
+            newCon.AccountId = accountId; 
         }
         
 
@@ -166,7 +157,7 @@ public with sharing class DMLOperations {
      */
     public static void updateOpportunityStage(Id oppId, String newStage) {
         // Retrieve the Opportunity from the database
-        Opportunity myOpportunity = [SELECT Id, StageName FROM Opportunity WHERE Id = :oppId];
+        Opportunity myOpportunity = [SELECT Id, StageName FROM Opportunity WHERE Id = :oppId LIMIT 1];
 
         // Update the Opportunity's stage
 
@@ -238,13 +229,11 @@ public with sharing class DMLOperations {
 
         } catch (DmlException e){
 
-            System.debug('Failed upsert: ' + e.getMessage());
-        }
+           System.debug(LoggingLevel.ERROR, 'Failed to upsert Opportunities: ' + e.getMessage())  ;
 
-       
+             }
 
-        
-    }
+         }
 
     /**
      * Question 8
@@ -369,14 +358,14 @@ public with sharing class DMLOperations {
         // Get the account name based on the contact's last name
 
         accountName = contact.LastName;
-        
-         // Query for an existing account with the same name or create one if it doesn't exist
 
+        // Query for an existing account with the same name or create one if it doesn't exist
+        List<Account> accLastNameMatch = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+    
          // Extract the Account Name from Contact's LastName
 
         // Get the account based on the name or create one if it doesn't exist
-        List<Account> accLastNameMatch = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
-
+       
         if (!accLastNameMatch.isEmpty()) {
             // Link the contact to the existing account
             contact.AccountId = accLastNameMatch[0].Id;
