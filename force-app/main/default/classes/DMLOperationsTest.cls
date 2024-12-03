@@ -244,7 +244,7 @@ public with sharing class DMLOperationsTest {
 		}
 	}
     
-    @IsTest
+   @IsTest
     static void testInsertAndDeleteLeads() {
         // Prepare the Lead names
         List<String> leadNames = new List<String>{ 'Test Lead 1', 'Test Lead 2', 'Test Lead 3' };
